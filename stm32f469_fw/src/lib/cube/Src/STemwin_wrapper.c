@@ -70,7 +70,7 @@
 #define ZONES           4   /* expected value 2,4 */
 #define HACT            XSIZE_PHYS/ZONES     /* SCREEN DIVIDED INTO TWO AREAS  */
 
-#define NUM_BUFFERS         1   /* Number of multiple buffers to be used */
+#define NUM_BUFFERS         2   /* Number of multiple buffers to be used */
 #define NUM_VSCREENS        1  /* Number of virtual screens to be used */
 
 #define COLOR_CONVERSION_0      GUICC_M565
@@ -863,7 +863,7 @@ void HAL_DSI_TearingEffectCallback(DSI_HandleTypeDef *hdsi)
 {
   uint32_t index = 0;
 
-	__DSI_MASK_TE();
+	//__DSI_MASK_TE();
 	
   for(index = 0; index < GUI_NUM_LAYERS; index ++)
   {
@@ -871,10 +871,10 @@ void HAL_DSI_TearingEffectCallback(DSI_HandleTypeDef *hdsi)
     {
       GUI_MULTIBUF_ConfirmEx(index,  layer_prop[index].pending_buffer);
       layer_prop[index].pending_buffer = -1;
-    }    
-			
+    }
+
     LCD_ActiveRegion = 1;
-    HAL_DSI_Refresh(hdsi); 
+    HAL_DSI_Refresh(hdsi);
   }
 }  
 /**
@@ -912,7 +912,7 @@ void HAL_DSI_EndOfRefreshCallback(DSI_HandleTypeDef *hdsi)
     __HAL_LTDC_RELOAD_CONFIG(&hltdc);
     __HAL_DSI_WRAPPER_ENABLE(hdsi); 
     LCD_SetUpdateRegion(0);
-LCD_Refershing = 0;		
+LCD_Refershing = 0;
   }
 }
 /**
@@ -1074,7 +1074,7 @@ int LCD_X_DisplayDriver(unsigned LayerIndex, unsigned Cmd, void * pData)
 
       LTDC_LAYER(&hltdc, LayerIndex)->CFBAR  = LCD_Addr[LayerIndex];
     __HAL_LTDC_RELOAD_CONFIG(&hltdc);
-    __HAL_DSI_WRAPPER_ENABLE(&hdsi);  	
+    __HAL_DSI_WRAPPER_ENABLE(&hdsi);
 	}
     break;
 
@@ -1172,8 +1172,8 @@ void GRAPHICS_Init(void)
   /* Initialize the GUI */
   GUI_Init();
 
+   WM_MULTIBUF_Enable(1);
 /* Enable the multi-buffering functionality */
-  // WM_MULTIBUF_Enable(1);
 
   /* Activate the use of memory device feature */
    /* USER CODE BEGIN WM_SetCreateFlags */

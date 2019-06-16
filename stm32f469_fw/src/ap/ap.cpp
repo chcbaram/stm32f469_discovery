@@ -75,12 +75,6 @@ void apMain(void)
     {
       pre_time = millis();
       ledToggle(_DEF_LED1);
-
-      GUI_Clear();
-      GUI_SetColor(GUI_WHITE);
-      GUI_SetFont(&GUI_Font32_1);
-      GUI_DispStringAt("Hello world!", (LCD_GetXSize()-150)/2, (LCD_GetYSize()-20)/2);
-      GUI_Delay(500);
     }
   }
 }

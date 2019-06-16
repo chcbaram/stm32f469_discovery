@@ -1,7 +1,7 @@
 [PreviousGenFiles]
-HeaderPath=D:/Work/fw/git/stm32f469_discovery/stm32f469_fw/src/lib/cube/Inc
+HeaderPath=D:/git/stm32f469_discovery/stm32f469_fw/src/lib/cube/Inc
 HeaderFiles=gpio.h;stm32f4xx_it.h;stm32f4xx_hal_conf.h;main.h;tim.h;usart.h;dma2d.h;dsihost.h;fmc.h;ltdc.h;crc.h;GUIConf.h;HW_Init.h;GUI_App.h;STemwin_wrapper.h;i2c.h;
-SourcePath=D:/Work/fw/git/stm32f469_discovery/stm32f469_fw/src/lib/cube/Src
+SourcePath=D:/git/stm32f469_discovery/stm32f469_fw/src/lib/cube/Src
 SourceFiles=gpio.c;stm32f4xx_it.c;stm32f4xx_hal_msp.c;main.c;tim.c;usart.c;dma2d.c;dsihost.c;fmc.c;ltdc.c;crc.c;GUIConf.c;GUI_App.c;HW_Init.c;STemwin_wrapper.c;WindowDLG.c;FramewinDLG.c;i2c.c;
 
 [PreviousLibFiles]

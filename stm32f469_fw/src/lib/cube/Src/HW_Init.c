@@ -343,7 +343,7 @@ void MX_DSI_Init(void)
   }
   CmdCfg.VirtualChannelID = 0;
   CmdCfg.ColorCoding = DSI_RGB888;
-  CmdCfg.CommandSize = 480;
+  CmdCfg.CommandSize = 200;
   CmdCfg.TearingEffectSource = DSI_TE_EXTERNAL;
   CmdCfg.TearingEffectPolarity = DSI_TE_RISING_EDGE;
   CmdCfg.HSPolarity = DSI_HSYNC_ACTIVE_LOW;
@@ -375,7 +375,7 @@ void MX_DSI_Init(void)
                      OTM8009A_CMD_DISPOFF,
                      0x00);
 
-  OTM8009A_Init(OTM8009A_FORMAT, OTM8009A_ORIENTATION_PORTRAIT);
+  OTM8009A_Init(OTM8009A_FORMAT, OTM8009A_ORIENTATION_LANDSCAPE);
 
   LPCmd.LPGenShortWriteNoP    = DSI_LP_GSW0P_DISABLE;
   LPCmd.LPGenShortWriteOneP   = DSI_LP_GSW1P_DISABLE;

@@ -19,6 +19,7 @@
 */
 
 // USER START (Optionally insert additional includes)
+#include "bsp.h"
 // USER END
 
 #include "DIALOG.h"
@@ -29,9 +30,13 @@
 *
 **********************************************************************
 */
-#define ID_WINDOW_0 (GUI_ID_USER + 0x00)
-#define ID_BUTTON_0 (GUI_ID_USER + 0x01)
-#define ID_EDIT_0 (GUI_ID_USER + 0x02)
+#define ID_WINDOW_0    (GUI_ID_USER + 0x00)
+#define ID_BUTTON_0    (GUI_ID_USER + 0x01)
+#define ID_EDIT_0    (GUI_ID_USER + 0x02)
+#define ID_CHECKBOX_0    (GUI_ID_USER + 0x03)
+#define ID_SLIDER_0    (GUI_ID_USER + 0x04)
+#define ID_PROGBAR_0    (GUI_ID_USER + 0x05)
+#define ID_GRAPH_0    (GUI_ID_USER + 0x06)
 
 
 // USER START (Optionally insert additional defines)
@@ -52,9 +57,13 @@
 *       _aDialogCreate
 */
 static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
-  { WINDOW_CreateIndirect, "Window", ID_WINDOW_0, 0, 3, 800, 480, 0, 0x0, 0 },
-  { BUTTON_CreateIndirect, "Button", ID_BUTTON_0, 54, 97, 117, 44, 0, 0x0, 0 },
-  { EDIT_CreateIndirect, "Edit", ID_EDIT_0, 193, 97, 144, 44, 0, 0x64, 0 },
+  { WINDOW_CreateIndirect, "Window", ID_WINDOW_0, 0, 0, 800, 480, 0, 0x0, 0 },
+  { BUTTON_CreateIndirect, "Button", ID_BUTTON_0, 41, 25, 142, 63, 0, 0x0, 0 },
+  { EDIT_CreateIndirect, "Edit", ID_EDIT_0, 210, 27, 155, 60, 0, 0x64, 0 },
+  { CHECKBOX_CreateIndirect, "Checkbox", ID_CHECKBOX_0, 42, 128, 156, 50, 0, 0x0, 0 },
+  { SLIDER_CreateIndirect, "Slider", ID_SLIDER_0, 89, 319, 627, 92, 0, 0x0, 0 },
+  { PROGBAR_CreateIndirect, "Progbar", ID_PROGBAR_0, 683, 25, 48, 276, 1, 0x0, 0 },
+  { GRAPH_CreateIndirect, "Graph", ID_GRAPH_0, 211, 119, 330, 161, 0, 0x0, 0 },
   // USER START (Optionally insert additional widgets)
   // USER END
 };
@@ -67,6 +76,7 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
 */
 
 // USER START (Optionally insert additional static code)
+int a= 0;
 // USER END
 
 /*********************************************************************
@@ -78,10 +88,18 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
   int     NCode;
   int     Id;
   // USER START (Optionally insert additional variables)
+  static I16   point;
+  static GRAPH_DATA_Handle hData1, hData2, hData3;
+  static WM_HTIMER hTimer;
   // USER END
 
   switch (pMsg->MsgId) {
   case WM_INIT_DIALOG:
+    //
+    // Initialization of 'Window'
+    //
+    hItem = pMsg->hWin;
+    WINDOW_SetBkColor(hItem, GUI_MAKE_COLOR(0x00FFFFFF));
     //
     // Initialization of 'Button'
     //
@@ -94,13 +112,33 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
     EDIT_SetText(hItem, "123");
     EDIT_SetFont(hItem, GUI_FONT_32B_ASCII);
     EDIT_SetTextAlign(hItem, GUI_TA_LEFT | GUI_TA_VCENTER);
+    //
+    // Initialization of 'Checkbox'
+    //
+    hItem = WM_GetDialogItem(pMsg->hWin, ID_CHECKBOX_0);
+    CHECKBOX_SetText(hItem, "Check");
+    CHECKBOX_SetFont(hItem, GUI_FONT_32B_ASCII);
+    //
+    // Initialization of 'Graph'
+    //
+    hItem = WM_GetDialogItem(pMsg->hWin, ID_GRAPH_0);
+    GRAPH_SetBorder(hItem, 0, 0, 0, 0);
     // USER START (Optionally insert additional code for further widget initialization)
+
+    hData1 = GRAPH_DATA_YT_Create(GUI_GREEN, 330, 0, 0);
+    hData2 = GRAPH_DATA_YT_Create(GUI_RED,   330, 0, 0);
+    hData3 = GRAPH_DATA_YT_Create(GUI_BLUE,  330, 0, 0);
+
+    hItem = WM_GetDialogItem(pMsg->hWin, ID_GRAPH_0);
+    GRAPH_AttachData(hItem, hData1);
+    GRAPH_AttachData(hItem, hData2);
+    GRAPH_AttachData(hItem, hData3);
+
+
+    hTimer = WM_CreateTimer(pMsg->hWin, 0, 100, 0);
+
     // USER END
     break;
-
-  case WM_PAINT:
-    break;
-
   case WM_NOTIFY_PARENT:
     Id    = WM_GetId(pMsg->hWinSrc);
     NCode = pMsg->Data.v;
@@ -109,20 +147,12 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
       switch(NCode) {
       case WM_NOTIFICATION_CLICKED:
         // USER START (Optionally insert code for reacting on notification message)
-        hItem = WM_GetDialogItem(pMsg->hWin, ID_EDIT_0);
-        EDIT_SetText(hItem, "Clicked");
-        //WM_InvalidateWindow(WM_GetDialogItem(pMsg->hWin, ID_EDIT_0));
-        printf("Clicked\r\n");
-        a = 1;
+        EDIT_SetText(WM_GetDialogItem(pMsg->hWin, ID_EDIT_0), "Clicked");
         // USER END
         break;
       case WM_NOTIFICATION_RELEASED:
         // USER START (Optionally insert code for reacting on notification message)
-        hItem = WM_GetDialogItem(pMsg->hWin, ID_EDIT_0);
-        EDIT_SetText(hItem, "Released");
-        printf("Released\r\n");
-        a = 2;
-        //WM_InvalidateWindow(WM_GetDialogItem(pMsg->hWin, ID_EDIT_0));
+        EDIT_SetText(WM_GetDialogItem(pMsg->hWin, ID_EDIT_0), "Released");
         // USER END
         break;
       // USER START (Optionally insert additional code for further notification handling)
@@ -147,11 +177,60 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
       // USER END
       }
       break;
+    case ID_CHECKBOX_0: // Notifications sent by 'Checkbox'
+      switch(NCode) {
+      case WM_NOTIFICATION_CLICKED:
+        // USER START (Optionally insert code for reacting on notification message)
+        // USER END
+        break;
+      case WM_NOTIFICATION_RELEASED:
+        // USER START (Optionally insert code for reacting on notification message)
+        // USER END
+        break;
+      case WM_NOTIFICATION_VALUE_CHANGED:
+        // USER START (Optionally insert code for reacting on notification message)
+        // USER END
+        break;
+      // USER START (Optionally insert additional code for further notification handling)
+      // USER END
+      }
+      break;
+    case ID_SLIDER_0: // Notifications sent by 'Slider'
+      switch(NCode) {
+      case WM_NOTIFICATION_CLICKED:
+        // USER START (Optionally insert code for reacting on notification message)
+        // USER END
+        break;
+      case WM_NOTIFICATION_RELEASED:
+        // USER START (Optionally insert code for reacting on notification message)
+        // USER END
+        break;
+      case WM_NOTIFICATION_VALUE_CHANGED:
+        // USER START (Optionally insert code for reacting on notification message)
+        printf("%d\r\n", SLIDER_GetValue(WM_GetDialogItem(pMsg->hWin, Id)));
+
+        PROGBAR_SetValue(WM_GetDialogItem(pMsg->hWin, ID_PROGBAR_0), SLIDER_GetValue(WM_GetDialogItem(pMsg->hWin, Id)));
+
+        point = SLIDER_GetValue(WM_GetDialogItem(pMsg->hWin, Id));
+
+        // USER END
+        break;
+      // USER START (Optionally insert additional code for further notification handling)
+      // USER END
+      }
+      break;
     // USER START (Optionally insert additional code for further Ids)
     // USER END
     }
     break;
   // USER START (Optionally insert additional message handling)
+  case WM_TIMER:
+    WM_RestartTimer(hTimer, 50);
+
+    GRAPH_DATA_YT_AddValue(hData1, point);
+    GRAPH_DATA_YT_AddValue(hData2, 100-point);
+    printf("test\r\n");
+    break;
   // USER END
   default:
     WM_DefaultProc(pMsg);
